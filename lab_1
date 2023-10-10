@@ -1,0 +1,24 @@
+public class UniqueDigits {
+    public static void main(String[] args) {
+        for (int i = 100; i < 1000; i++) {
+            if (hasUniqueDigits(i)) {
+                System.out.println(i);
+            }
+        }
+    }
+
+    public static boolean hasUniqueDigits(int num) {
+        int[] digitCount = new int[10]; 
+
+        while (num > 0) {
+            int digit = num % 10; 
+            if (digitCount[digit] > 0) {
+                return false; 
+            }
+            digitCount[digit]++; 
+            num /= 10; 
+        }
+
+        return true; 
+    }
+}
