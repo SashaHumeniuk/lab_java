@@ -1,0 +1,46 @@
+import java.util.Scanner;
+
+public class IncreasingDigits {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter the number of values: ");
+        int n = scanner.nextInt();
+        
+        int result = -1;
+        
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter a number: ");
+            int number = scanner.nextInt();
+            
+            if (hasIncreasingDigits(number)) {
+                result = number;
+                break;
+            }
+        }
+        
+        if (result != -1) {
+            System.out.println("The first number with increasing digits: " + result);
+        } else {
+            System.out.println("No number with increasing digits found.");
+        }
+        
+        scanner.close();
+    }
+    
+    public static boolean hasIncreasingDigits(int num) {
+        int lastDigit = num % 10;
+        num /= 10;
+        
+        while (num > 0) {
+            int currentDigit = num % 10;
+            if (currentDigit >= lastDigit) {
+                return false;
+            }
+            lastDigit = currentDigit;
+            num /= 10;
+        }
+        
+        return true;
+    }
+}
