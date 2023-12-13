@@ -1,62 +1,78 @@
-interface Ship {
-    void sail();
+// Інтерфейс Видання
+interface Publication {
+    void publish();
 }
 
-// Клас "Вантажний корабель", який реалізує інтерфейс "Корабель"
-class CargoShip implements Ship {
-    private String name;
-    private int cargoCapacity; // Вантажопідйомність в тоннах
+// Абстрактний клас Книга
+abstract class Book implements Publication {
+    private String title;
+    private String author;
 
-    public CargoShip(String name, int cargoCapacity) {
-        this.name = name;
-        this.cargoCapacity = cargoCapacity;
+    public Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     @Override
-    public void sail() {
-        System.out.println("Вантажний корабель " + name + " відпливає.");
-    }
-
-    public void loadCargo() {
-        System.out.println("Завантажено " + cargoCapacity + " тонн вантажу на корабель " + name);
+    public void publish() {
+        System.out.println("Book: " + title + " by " + author);
     }
 }
 
-// Клас "Танкер", який також реалізує інтерфейс "Корабель"
-class Tanker implements Ship {
-    private String name;
-    private int oilCapacity; // Поємність для нафти в тоннах
+// Клас Довідник, який успадковується від Книги
+class Handbook extends Book {
+    private String topic;
 
-    public Tanker(String name, int oilCapacity) {
-        this.name = name;
-        this.oilCapacity = oilCapacity;
+    public Handbook(String title, String author, String topic) {
+        super(title, author);
+        this.topic = topic;
+    }
+
+    public String getTopic() {
+        return topic;
     }
 
     @Override
-    public void sail() {
-        System.out.println("Танкер " + name + " відпливає.");
+    public void publish() {
+        System.out.println("Handbook: " + getTitle() + " (" + topic + ") by " + getAuthor());
+    }
+}
+
+// Клас Енциклопедія, який успадковується від Книги
+class Encyclopedia extends Book {
+    private String field;
+
+    public Encyclopedia(String title, String author, String field) {
+        super(title, author);
+        this.field = field;
     }
 
-    public void loadOil() {
-        System.out.println("Завантажено " + oilCapacity + " тонн нафти на танкер " + name);
+    public String getField() {
+        return field;
+    }
+
+    @Override
+    public void publish() {
+        System.out.println("Encyclopedia: " + getTitle() + " (" + field + ") by " + getAuthor());
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Ship ship1 = new CargoShip("Вантажник 1", 5000);
-        Ship ship2 = new Tanker("Танкер 1", 3000);
+        // Приклад використання поліморфізму
+        Publication handbook = new Handbook("Java Handbook", "John Doe", "Programming");
+        Publication encyclopedia = new Encyclopedia("Science Encyclopedia", "Jane Smith", "Science");
 
-        ship1.sail();
-        ship2.sail();
-
-        // Поліморфізм: викликаємо методи для конкретних типів кораблів
-        if (ship1 instanceof CargoShip) {
-            ((CargoShip) ship1).loadCargo();
-        }
-
-        if (ship2 instanceof Tanker) {
-            ((Tanker) ship2).loadOil();
-        }
+        // Виклик методу publish для об'єктів різних класів, які реалізують інтерфейс Publication
+        handbook.publish();
+        encyclopedia.publish();
     }
 }
