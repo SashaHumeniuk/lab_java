@@ -1,108 +1,99 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-// Базовий клас для файлів
-class File {
-    protected String name;
+// Базовий клас для представлення овочів
+class Vegetable {
+    private String name;
+    private int calories;
 
-    public File(String name) {
+    public Vegetable(String name, int calories) {
         this.name = name;
+        this.calories = calories;
     }
 
     public String getName() {
         return name;
     }
 
-    // Перевизначення методу toString для виводу назви файлу
+    public int getCalories() {
+        return calories;
+    }
+
     @Override
     public String toString() {
-        return name;
+        return name + " (" + calories + " calories)";
     }
 }
 
-// Клас, який представляє текстовий файл
-class TextFile extends File {
-    private StringBuilder content;
+// Клас для представлення салату, що складається з овочів
+class Salad {
+    private List<Vegetable> vegetables = new ArrayList<>();
 
-    public TextFile(String name) {
-        super(name);
-        content = new StringBuilder();
+    public void addVegetable(Vegetable vegetable) {
+        vegetables.add(vegetable);
     }
 
-    // Метод для запису вмісту у текстовий файл
-    public void writeContent(String text) {
-        content.append(text);
+    public int calculateCalories() {
+        int totalCalories = 0;
+        for (Vegetable vegetable : vegetables) {
+            totalCalories += vegetable.getCalories();
+        }
+        return totalCalories;
     }
 
-    // Метод для виводу вмісту файлу на консоль
-    public void displayContent() {
-        System.out.println("Content of file " + name + ":");
-        System.out.println(content.toString());
-    }
-}
-
-// Клас, який представляє директорію
-class Directory {
-    private String name;
-    private List<File> files;
-
-    public Directory(String name) {
-        this.name = name;
-        files = new ArrayList<>();
+    public void sortVegetablesByName() {
+        Collections.sort(vegetables, (v1, v2) -> v1.getName().compareTo(v2.getName()));
     }
 
-    // Метод для створення файлу у директорії
-    public void createFile(String fileName) {
-        TextFile file = new TextFile(fileName);
-        files.add(file);
-    }
-
-    // Метод для перейменування файлу в директорії
-    public void renameFile(String oldName, String newName) {
-        for (File file : files) {
-            if (file.getName().equals(oldName)) {
-                file.name = newName;
-                return;
+    public List<Vegetable> findVegetablesByCaloriesRange(int minCalories, int maxCalories) {
+        List<Vegetable> result = new ArrayList<>();
+        for (Vegetable vegetable : vegetables) {
+            if (vegetable.getCalories() >= minCalories && vegetable.getCalories() <= maxCalories) {
+                result.add(vegetable);
             }
         }
+        return result;
     }
 
-    // Метод для виводу списку файлів у директорії на консоль
-    public void listFiles() {
-        System.out.println("Files in directory " + name + ":");
-        for (File file : files) {
-            System.out.println(file.getName());
+    public void printVegetables() {
+        for (Vegetable vegetable : vegetables) {
+            System.out.println(vegetable);
         }
-    }
-
-    // Метод для видалення файлу з директорії
-    public void deleteFile(String fileName) {
-        files.removeIf(file -> file.getName().equals(fileName));
     }
 }
 
-public class Main {
+public class ChefApp {
     public static void main(String[] args) {
-        Directory directory = new Directory("MyFiles");
+        // Створення овочів
+        Vegetable tomato = new Vegetable("Tomato", 20);
+        Vegetable cucumber = new Vegetable("Cucumber", 15);
+        Vegetable carrot = new Vegetable("Carrot", 30);
 
-        TextFile file1 = new TextFile("document.txt");
-        file1.writeContent("This is the content of the file.");
+        // Створення салату
+        Salad salad = new Salad();
 
-        TextFile file2 = new TextFile("report.txt");
-        file2.writeContent("A sample report.");
+        // Додавання овочів до салату
+        salad.addVegetable(tomato);
+        salad.addVegetable(cucumber);
+        salad.addVegetable(carrot);
 
-        directory.createFile("notes.txt");
+        // Виведення на екран калорійності салату
+        System.out.println("Calories in the salad: " + salad.calculateCalories());
 
-        directory.listFiles();
+        // Сортування овочів за назвою
+        salad.sortVegetablesByName();
+        System.out.println("\nSorted vegetables by name:");
+        salad.printVegetables();
 
-        file1.displayContent();
+        // Пошук овочів за діапазоном калорійності
+        int minCalories = 10;
+        int maxCalories = 25;
+        List<Vegetable> selectedVegetables = salad.findVegetablesByCaloriesRange(minCalories, maxCalories);
 
-        directory.renameFile("notes.txt", "important-notes.txt");
-
-        directory.listFiles();
-
-        directory.deleteFile("report.txt");
-
-        directory.listFiles();
+        System.out.println("\nVegetables within the calorie range " + minCalories + " - " + maxCalories + ":");
+        for (Vegetable vegetable : selectedVegetables) {
+            System.out.println(vegetable);
+        }
     }
 }
