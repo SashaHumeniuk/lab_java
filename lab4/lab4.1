@@ -1,98 +1,127 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Random;
 
-// Базовий клас для електроприладів
-class ElectricalAppliance {
-    private String name;
-    private int power; // Потужність в Ваттах (Вт)
-    private boolean isPluggedIn; // Показує, чи включений прилад
+class Element {
+    private int value;
 
-    public ElectricalAppliance(String name, int power) {
-        this.name = name;
-        this.power = power;
-        this.isPluggedIn = false; // При створенні за замовчуванням прилад не включений
+    public Element(int value) {
+        this.value = value;
     }
 
-    // Метод для включення приладу
-    public void plugIn() {
-        isPluggedIn = true;
+    public int getValue() {
+        return value;
     }
 
-    // Метод для вимкнення приладу
-    public void unplug() {
-        isPluggedIn = false;
-    }
-
-    public int getPower() {
-        return isPluggedIn ? power : 0;
-    }
-
-    public boolean isPluggedIn() {
-        return isPluggedIn;
+    public void setValue(int value) {
+        this.value = value;
     }
 
     @Override
     public String toString() {
-        return name + " (Потужність: " + power + " Вт)";
+        return Integer.toString(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Element element = (Element) obj;
+        return value == element.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(value);
     }
 }
 
-// Клас для представлення квартири
-class Apartment {
-    private List<ElectricalAppliance> appliances = new ArrayList<>();
+class Array {
+    protected Element[] elements;
 
-    // Метод для додавання приладу до квартири
-    public void addAppliance(ElectricalAppliance appliance) {
-        appliances.add(appliance);
-    }
+    public Array(int size) {
+        this.elements = new Element[size];
+        Random random = new Random();
 
-    // Метод для підрахунку загальної споживаної потужності
-    public int calculateTotalPower() {
-        int totalPower = 0;
-        for (ElectricalAppliance appliance : appliances) {
-            totalPower += appliance.getPower();
+        for (int i = 0; i < size; i++) {
+            elements[i] = new Element(random.nextInt(100));
         }
-        return totalPower;
     }
 
-    // Метод для сортування приладів за потужністю
-    public void sortAppliancesByPower() {
-        Collections.sort(appliances, (a1, a2) -> a2.getPower() - a1.getPower());
+    public Element[] getElements() {
+        return elements;
     }
 
-    // Метод для пошуку приладу в заданому діапазоні потужності
-    public List<ElectricalAppliance> findAppliancesInPowerRange(int minPower, int maxPower) {
-        List<ElectricalAppliance> result = new ArrayList<>();
-        for (ElectricalAppliance appliance : appliances) {
-            if (appliance.getPower() >= minPower && appliance.getPower() <= maxPower) {
-                result.add(appliance);
-            }
+    public void printArray() {
+        System.out.println(Arrays.toString(elements));
+    }
+
+    public void addArray(Array otherArray) {
+        for (int i = 0; i < elements.length; i++) {
+            elements[i].setValue(elements[i].getValue() + otherArray.getElements()[i].getValue());
         }
-        return result;
+    }
+
+    public void subtractArray(Array otherArray) {
+        for (int i = 0; i < elements.length; i++) {
+            elements[i].setValue(elements[i].getValue() - otherArray.getElements()[i].getValue());
+        }
+    }
+
+    public void multiplyArray(int multiplier) {
+        for (Element element : elements) {
+            element.setValue(element.getValue() * multiplier);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(elements);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Array array = (Array) obj;
+        return Arrays.equals(elements, array.elements);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(elements);
     }
 }
 
-public class Electro {
+class OneDimensionalArray extends Array {
+    public OneDimensionalArray(int size) {
+        super(size);
+    }
+
+    // Перевизначені методи
+    public void addArray(OneDimensionalArray otherArray) {
+        super.addArray(otherArray);
+    }
+
+    public void multiplyArray(int multiplier) {
+        super.multiplyArray(multiplier);
+    }
+}
+
+public class Main {
     public static void main(String[] args) {
-        ElectricalAppliance tv = new ElectricalAppliance("Телевізор", 100);
-        ElectricalAppliance fridge = new ElectricalAppliance("Холодильник", 150);
-        ElectricalAppliance laptop = new ElectricalAppliance("Ноутбук", 50);
+        OneDimensionalArray oneDimensionalArray1 = new OneDimensionalArray(5);
+        OneDimensionalArray oneDimensionalArray2 = new OneDimensionalArray(5);
 
-        Apartment apartment = new Apartment();
-        apartment.addAppliance(tv);
-        apartment.addAppliance(fridge);
-        apartment.addAppliance(laptop);
+        System.out.println("Initial arrays:");
+        oneDimensionalArray1.printArray();
+        oneDimensionalArray2.printArray();
 
-        tv.plugIn();
-        fridge.plugIn();
+        oneDimensionalArray1.addArray(oneDimensionalArray2);
+        System.out.println("Array after addition:");
+        oneDimensionalArray1.printArray();
 
-        System.out.println("Загальна потужність: " + apartment.calculateTotalPower() + " Вт");
-
-        apartment.sortAppliancesByPower();
-        System.out.println("Прилади, відсортовані за потужністю:");
-        for (ElectricalAppliance appliance : apartment.findAppliancesInPowerRange(50, 150)) {
-            System.out.println(appliance);
-        }
+        oneDimensionalArray1.multiplyArray(2);
+        System.out.println("Array after multiplication by 2:");
+        oneDimensionalArray1.printArray();
     }
 }
