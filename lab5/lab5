@@ -1,52 +1,67 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Park {
-    private String name;
-    private Attraction[] attractions;
-
-    public Park(String name, int numAttractions) {
-        this.name = name;
-        attractions = new Attraction[numAttractions];
-    }
-
     // Внутрішній клас для представлення атракціону
-    class Attraction {
+    public class Attraction {
         private String name;
-        private int workingHours; // Час роботи в годинах
-        private double cost; // Вартість
+        private String workingHours;
+        private double cost;
 
-        public Attraction(String name, int workingHours, double cost) {
+        public Attraction(String name, String workingHours, double cost) {
             this.name = name;
             this.workingHours = workingHours;
             this.cost = cost;
         }
 
+        public String getName() {
+            return name;
+        }
+
+        public String getWorkingHours() {
+            return workingHours;
+        }
+
+        public double getCost() {
+            return cost;
+        }
+
         @Override
         public String toString() {
-            return "Атракціон: " + name + ", Час роботи: " + workingHours + " год, Вартість: " + cost + " грн";
+            return "Attraction{" +
+                    "name='" + name + '\'' +
+                    ", workingHours='" + workingHours + '\'' +
+                    ", cost=" + cost +
+                    '}';
         }
     }
 
-    // Метод для додавання атракціону в парк
-    public void addAttraction(int index, String name, int workingHours, double cost) {
-        attractions[index] = new Attraction(name, workingHours, cost);
+    private List<Attraction> attractions;
+
+    public Park() {
+        this.attractions = new ArrayList<>();
     }
 
-    // Метод для виведення інформації про атракції
-    public void listAttractions() {
-        System.out.println("Атракції у парку \"" + name + "\":");
-        for (Attraction attraction : attractions) {
-            if (attraction != null) {
-                System.out.println(attraction);
-            }
-        }
+    public void addAttraction(String name, String workingHours, double cost) {
+        Attraction attraction = new Attraction(name, workingHours, cost);
+        attractions.add(attraction);
+    }
+
+    public List<Attraction> getAttractions() {
+        return attractions;
     }
 
     public static void main(String[] args) {
-        Park park = new Park("Парк розваг", 5);
+        Park park = new Park();
 
-        park.addAttraction(0, "Карусель", 4, 50.0);
-        park.addAttraction(1, "Лабіринт", 2, 30.0);
-        park.addAttraction(2, "Гойдалка", 3, 40.0);
+        park.addAttraction("Roller Coaster", "10:00 AM - 8:00 PM", 25.99);
+        park.addAttraction("Ferris Wheel", "11:00 AM - 9:00 PM", 15.50);
+        park.addAttraction("Haunted House", "6:00 PM - 11:00 PM", 18.75);
 
-        park.listAttractions();
+        // Вивід інформації про атракціони
+        List<Park.Attraction> attractions = park.getAttractions();
+        for (Park.Attraction attraction : attractions) {
+            System.out.println(attraction);
+        }
     }
 }
